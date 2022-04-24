@@ -15,40 +15,35 @@ import org.omnifaces.util.Faces;
  *
  * @author vitor
  */
-
-    @SuppressWarnings("serial")
+@SuppressWarnings("serial")
 public class AutenticacaoListener implements PhaseListener {
 
-	@Override
-	public void afterPhase(PhaseEvent event) {
-		String paginaAtual = Faces.getViewId();
-	
-		boolean ehPaginaDeAutenticacao = paginaAtual.contains("login.xhtml");
-	
-		if(!ehPaginaDeAutenticacao){
-			UsuarioController autenticacaoBean = Faces.getSessionAttribute("usuarioMB");
+    @Override
+    public void afterPhase(PhaseEvent event) {
 
-			if(autenticacaoBean == null){
-				Faces.navigate("/login.xhtml");
-				return;
-			}
-			
-			Usuario usuario = autenticacaoBean.getUsuario();
-			if(usuario == null){
-				Faces.navigate("/login.xhtml");
-				return;
-			}
-		}		
-	}
+        String paginaAtual = Faces.getViewId();
+        boolean paginaAutenticacao = paginaAtual.contains("login.xhtml");
+        if (!paginaAutenticacao) {
+            UsuarioController autenticacao = Faces.getSessionAttribute("usuarioMB");
+            if (autenticacao == null) {
+                Faces.navigate("/login.xhtml");
+                return;
+            }
+            Usuario usuario = autenticacao.getUsuarioaLogar();
+            if (usuario == null) {
+                Faces.navigate("/login.xhtml");
+                return;
+            }
+        }
+    }
 
-	@Override
-	public void beforePhase(PhaseEvent event) {
-	}
+    @Override
+    public void beforePhase(PhaseEvent event) {
+    }
 
-	@Override
-	public PhaseId getPhaseId() {
-		return PhaseId.RESTORE_VIEW;
-	}
+    @Override
+    public PhaseId getPhaseId() {
+        return PhaseId.RESTORE_VIEW;
+    }
 
 }
-
