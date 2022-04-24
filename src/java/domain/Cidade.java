@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="cidade")
+@Table(name = "cidade")
 public class Cidade implements Serializable {
 
     @Id
@@ -22,16 +22,16 @@ public class Cidade implements Serializable {
     private Integer id;
 
     @NotNull
-    @Column(name="nome")
-    @Size(min=3, max=255)
+    @Column(name = "nome")
+    @Size(min = 3, max = 255)
     private String nome;
-    
+
     @NotNull
-    @Column(name="uf")
-    @Size(min=2, max=2)
+    @Column(name = "uf")
+    @Size(min = 2, max = 2)
     private String uf;
-    
-    public Cidade(){
+
+    public Cidade() {
     }
 
     public Cidade(Integer id, String nome, String uf) {
@@ -63,9 +63,13 @@ public class Cidade implements Serializable {
     public void setUf(String uf) {
         this.uf = uf;
     }
-    
-    
+
     public boolean equals(Cidade c1) {
         return this.getNome().equals(c1.getNome()) && this.getUf().equals(c1.getUf());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s[id=%d]", getClass().getSimpleName(), getId());
     }
 }

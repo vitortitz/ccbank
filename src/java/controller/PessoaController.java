@@ -4,7 +4,9 @@
  */
 package controller;
 
+import dao.CidadeDao;
 import dao.UsuarioDao;
+import domain.Cidade;
 import domain.Pessoa;
 import domain.Usuario;
 import java.io.Serializable;
@@ -26,7 +28,17 @@ public class PessoaController implements Serializable {
     private Pessoa pessoa;
     private List<Pessoa> pessoas;
     private List<Usuario> usuarios;
+    private List<Cidade> cidades;
 
+    public List<Cidade> getCidades() {
+        return cidades;
+    }
+
+    public void setCidades(List<Cidade> cidades) {
+        this.cidades = cidades;
+    }
+
+    
     public List<Usuario> getUsuarios() {
         return usuarios;
     }
@@ -46,11 +58,14 @@ public class PessoaController implements Serializable {
         this.pessoa = new Pessoa();
         UsuarioDao usuarioDao = new UsuarioDao();
         usuarios = usuarioDao.findAll();
+        CidadeDao cidadeDao = new CidadeDao();
+        cidades = cidadeDao.findAll();
         return "novo.xhtml";
     }
     
     public String inserirOuAtualizar(){
         if((pessoa.getId() == null)){
+            System.out.println(pessoa.getNome() +"     " +pessoa.getCidade().getNome()+"     " +pessoa.getUsuarioId().getLogin() );
             inserir();
         }else{
             atualizar();

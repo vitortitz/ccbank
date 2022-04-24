@@ -99,30 +99,51 @@
                   draggable="false" resizable="false" modal="true" closable="false">
             <h:form id="formCadastro" enctype="multipart/form-data">
                 <h:panelGrid id="painel" columns="2">
-                    Nome: <h:inputText id="nome" value="#{pessoaMB.pessoa.nome}"/><br/>
+                    Nome: <h:inputText id="nome" value="#{pessoaMB.pessoa.nome}" required="true" requiredMessage="O campo nome deve conter entre 1 e 255 caracteres."/><br/>
                     Telefone: <p:inputMask id="telefone" value="#{pessoaMB.pessoa.telefone}" mask="(99) 99999-9999" validateMask="true"/><br/>
                     Email: <p:inputText id="email" value="#{pessoaMB.pessoa.email}" requiredMessage="Porfavor digite seu e-mail"
                                         validatorMessage="Formato de email inválido" required="true">
                         <f:validateRegex
                             pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
                     </p:inputText><br/>
-                    Tipo de pessoa: <p:selectOneRadio id="tipoPessoa" value="#{pessoaMB.pessoa.tipoPessoa}" unselectable="false">
+                    Tipo de pessoa: <p:selectOneRadio id="tipoPessoa" value="#{pessoaMB.pessoa.tipoPessoa}" unselectable="true" required="true" requiredMessage="O campo Tipo de Pessoa é obrigatório"> 
                         <f:selectItem itemLabel="Física" itemValue="1"/>
                         <f:selectItem itemLabel="Jurídica" itemValue="2"/>   
                         <f:ajax render="consulta" />
                     </p:selectOneRadio><br/>
-                    <h:panelGrid id="consulta">
-                    CPF: <p:inputMask id="cpf" value="#{pessoaMB.pessoa.cpf}" mask="999.999.999-99" validateMask="true" disabled="#{pessoaMB.pessoa.tipoPessoa !=1}"/><br/>
-                    CNPJ: <p:inputMask id="cnpj" value="#{pessoaMB.pessoa.cnpj}" mask="99.999.999/9999-99" disabled="#{pessoaMB.pessoa.tipoPessoa !=2}"/><br/>
+                    <h:panelGrid id="consulta" columns="2">
+                        CPF: <p:inputMask id="cpf" value="#{pessoaMB.pessoa.cpf}" mask="999.999.999-99" validateMask="true" disabled="#{pessoaMB.pessoa.tipoPessoa !=1}"/><br/>
+                        CNPJ: <p:inputMask id="cnpj" value="#{pessoaMB.pessoa.cnpj}" mask="99.999.999/9999-99" disabled="#{pessoaMB.pessoa.tipoPessoa !=2}"/><br/>
                     </h:panelGrid>
                     Data Nascimento: <p:inputMask id="datanascimento" value="#{pessoaMB.pessoa.dataNascimento}" mask="99/99/9999" validateMask="true">
                         <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR"/>
                     </p:inputMask><br/>
-                    Sexo: <h:inputText id="sexo" value="#{pessoaMB.pessoa.sexo}"/><br/>
+                    Sexo: <p:selectOneRadio id="sexo" value="#{pessoaMB.pessoa.sexo}" unselectable="true" required="true" requiredMessage="O campo sexo é obrigatório">
+                        <f:selectItem itemLabel="Masculino" itemValue="M"/>
+                        <f:selectItem itemLabel="Feminino" itemValue="F"/>   
+                        <f:ajax render="consulta" />
+                    </p:selectOneRadio><br/><br/>
                     Usuário:
-                    <p:selectOneMenu filter="true" value="#{pessoaMB.pessoa.usuarioId}" converter="usuarioConverter">
-                        <f:selectItem itemValue="" itemLabel="Selecione um usuario" />
-                        <f:selectItems value="#{pessoaMB.usuarios}" var="usuario" itemValue="#{usuario}" itemLabel="#{usuario.login}"/>
+                    <p:selectOneMenu id="usuario" filter="true"
+                                     value="#{pessoaMB.pessoa.usuarioId}"
+                                     converter="omnifaces.SelectItemsConverter" required="true"
+                                     requiredMessage="O campo 'Estado' é obrigatório">
+                        <f:selectItem noSelectionOption="true"
+                                      itemLabel="Selecione um estado" />
+                        <f:selectItems value="#{pessoaMB.usuarios}" var="usuario"
+                                       itemValue="#{usuario}"
+                                       itemLabel="#{usuario.login}" />
+                    </p:selectOneMenu><br/>
+                    Cidade:
+                    <p:selectOneMenu id="cidade" filter="true"
+                                     value="#{pessoaMB.pessoa.cidade}"
+                                     converter="omnifaces.SelectItemsConverter" required="true"
+                                     requiredMessage="O campo 'Estado' é obrigatório">
+                        <f:selectItem noSelectionOption="true"
+                                      itemLabel="Selecione um estado" />
+                        <f:selectItems value="#{pessoaMB.cidades}" var="cidade"
+                                       itemValue="#{cidade}"
+                                       itemLabel="#{cidade.nome} - #{cidade.uf}" />
                     </p:selectOneMenu>
                 </h:panelGrid>
 
