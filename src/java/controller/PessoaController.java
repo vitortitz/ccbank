@@ -65,7 +65,6 @@ public class PessoaController implements Serializable {
     
     public String inserirOuAtualizar(){
         if((pessoa.getId() == null)){
-            System.out.println(pessoa.getNome() +"     " +pessoa.getCidade().getNome()+"     " +pessoa.getUsuarioId().getLogin() );
             inserir();
         }else{
             atualizar();

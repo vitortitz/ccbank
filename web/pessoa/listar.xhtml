@@ -47,7 +47,9 @@
 
                     <p:column headerText="Data Nascimento" sortBy="#{pessoa.dataNascimento}" filterBy="#{pessoa.dataNascimento}"
                               filterMatchMode="contains">
-                        <h:outputText value="#{pessoa.dataNascimento}" />
+                        <h:outputText value="#{pessoa.dataNascimento}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" locale="pt_BR"/>
+                        </h:outputText>
                     </p:column>
 
                     <p:column headerText="CPF" sortBy="#{pessoa.cpf}" filterBy="#{pessoa.cpf}"
@@ -73,6 +75,16 @@
                     <p:column headerText="Tipo de Pessoa" sortBy="#{pessoa.tipoPessoa}" filterBy="#{pessoa.tipoPessoa}"
                               filterMatchMode="contains">
                         <h:outputText value="#{pessoa.tipoPessoa}" />
+                    </p:column>
+                    
+                    <p:column headerText="Cidade" sortBy="#{pessoa.cidade.nome} + #{pessoa.cidade.uf}" filterBy="#{pessoa.cidade.nome} + #{pessoa.cidade.uf}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{pessoa.cidade.nome} + #{pessoa.cidade.uf}" />
+                    </p:column>
+                    
+                    <p:column headerText="Usuario" sortBy="#{pessoa.usuarioId.login}" filterBy="#{pessoa.usuarioId.login}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{pessoa.usuarioId.login}" />
                     </p:column>
 
                     <p:column>

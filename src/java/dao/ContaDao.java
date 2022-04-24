@@ -18,7 +18,7 @@ public class ContaDao {
     public List<Conta> findAll(){
         session.beginTransaction();
         try{
-            List<Conta> contas = session.createQuery("from Conta order by iiid").list();
+            List<Conta> contas = session.createQuery("from Conta order by id").list();
             session.getTransaction().commit();
             return contas;
         }catch(Exception e){

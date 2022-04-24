@@ -23,8 +23,8 @@ public class ContaService {
         contaDao = new ContaDao();
     }
     
-    public void inserir(Conta conta) {
-        contaDao.insert(conta);
+    public boolean inserir(Conta conta) {
+        return contaDao.insert(conta);
     }
     
     public void editar(Conta conta) {
