@@ -1,0 +1,86 @@
+ <ui:composition
+     xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      template="../layout/layout.xhtml">
+    <ui:define name="title">
+        Listar Cidades
+    </ui:define>
+     <ui:define name="content">
+         <p:growl id="mensagem" showDetail="true"/> 
+         <h:form id="formListagem">
+            <p:panel header="Cidades - Listagem">
+                <p:dataTable id="tabela" var="cidade"
+                             value="#{cidadeMB.getTodasCidades()}"
+                             style="margin-bottom:20px;text-align:center" rows="20"
+                             paginatorPosition="top" paginator="true">
+
+                    <f:facet name="header">
+                        <p:commandButton icon="ui-icon-plus"
+                                         value="Adicionar Cidade"
+                                         actionListener="#{cidadeMB.novo}"
+                                         oncomplete="PF('dialogo').show();"
+                                         update=":mensagem :formCadastro:painel">
+                        </p:commandButton>
+                    </f:facet>
+                    <p:column headerText="Código" filterBy="#{cidade.id}"
+                              filterMatchMode="contains" sortBy="#{cidade.id}">
+                        <h:outputText value="#{cidade.id}" />
+                    </p:column>
+
+                    <p:column headerText="Nome" filterBy="#{cidade.nome}"
+                              filterMatchMode="contains" sortBy="#{cidade.nome}">
+                        <h:outputText value="#{cidade.nome}" />
+                    </p:column>
+                    <p:column headerText="UF" sortBy="#{cidade.uf}" filterBy="#{cidade.uf}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{cidade.uf}" />
+                    </p:column>
+                    <p:column>
+                        <p:commandButton icon="ui-icon-trash"
+                                         actionListener="#{cidadeMB.excluir(cidade)}"
+                                         update=":mensagem :formListagem:tabela">
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-pencil"
+                                         actionListener="#{cidadeMB.editar(cidade)}"
+                                         update=":mensagem :formCadastro:painel"
+                                         oncomplete="PF('dialogo').show();">                            
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Sim" type="button"
+                                     styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button"
+                                     styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </p:panel>
+        </h:form>
+        <p:dialog header="Cidade - Cadastro" widgetVar="dialogo"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form id="formCadastro" enctype="multipart/form-data">
+                <h:panelGrid id="painel" columns="2">
+                    <p:outputLabel for="nome" value="Descrição:" />
+                    <p:inputText id="nome" maxlength="50" size="30"
+                                 value="#{cidadeMB.cidade.nome}" required="true"
+                                 requiredMessage="O campo 'Nome' é obrigatório" />
+                    <p:outputLabel for="uf" value="UF" />
+                    <p:inputText id="uf" maxlength="2" size="2"
+                                 value="#{cidadeMB.cidade.uf}" required="true"
+                                 requiredMessage="O campo 'UF' é obrigatório" 
+                                 validator="UFValidator" />
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Salvar"
+                                     actionListener="#{cidadeMB.inserirOuAtualizar()}"
+                                     update=":mensagem :formCadastro:painel :formListagem:tabela" />
+                    <p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+         
+     </ui:define>
+ </ui:composition>

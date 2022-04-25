@@ -1,0 +1,108 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="../privado/layout/layout.xhtml"
+    xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title">
+        Listar Contas
+    </ui:define>
+    <ui:define name="content">
+        <p:growl id="mensagem" showDetail="true"/>        
+        <h:form id="formListagem">
+            <p:panel header="Contas - Listagem">
+                <p:dataTable id="tabela" var="conta"
+                             value="#{contaMB.getTodasContas()}"
+                             style="margin-bottom:20px;text-align:center" rows="20"
+                             paginatorPosition="top" paginator="true">
+
+                    <f:facet name="header">
+                        <p:commandButton icon="ui-icon-plus"
+
+                                         value="Adicionar Conta"
+                                         actionListener="#{contaMB.novo}"
+                                         oncomplete="PF('dialogo').show();"
+                                         update=":mensagem :formCadastro:painel">
+                        </p:commandButton>
+                    </f:facet>
+                    <p:column headerText="Código" filterBy="#{conta.id}"
+                              filterMatchMode="contains" sortBy="#{conta.id}">
+                        <h:outputText value="#{usuario.id}" />
+                    </p:column>
+
+                    <p:column headerText="Número" filterBy="#{conta.numero}"
+                              filterMatchMode="contains" sortBy="#{conta.numero}">
+                        <h:outputText value="#{conta.numero}" />
+                    </p:column>
+                    <p:column headerText="Limite" sortBy="#{conta.limite}" filterBy="#{conta.limite}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{conta.limite}" />
+                    </p:column>
+                    <p:column headerText="Saldo" sortBy="#{conta.saldo}" filterBy="#{conta.saldo}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{conta.saldo}" />
+                    </p:column>
+                    <p:column headerText="Pessoa" sortBy="#{conta.pessoaId.nome}" filterBy="#{conta.pessoaId.nome}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{conta.pessoaId.nome}" />
+                    </p:column>
+                    <p:column>
+                        <p:commandButton icon="ui-icon-trash"
+                                         actionListener="#{contaMB.excluir(conta)}"
+                                         update=":mensagem :formListagem:tabela">
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-pencil"
+                                         actionListener="#{contaMB.editar(conta)}"
+                                         update=":mensagem :formCadastro:painel"
+                                         oncomplete="PF('dialogo').show();">                            
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Sim" type="button"
+                                     styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button"
+                                     styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </p:panel>
+        </h:form>
+        <p:dialog header="Usuario - Cadastro" widgetVar="dialogo"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form id="formCadastro" enctype="multipart/form-data">
+                <h:panelGrid id="painel" columns="2">
+                    <p:outputLabel for="numero" value="Número:" />
+                    <p:inputText id="numero" maxlength="255" size="50"
+                                 value="#{contaMB.conta.numero}" required="true"
+                                 requiredMessage="O campo 'Nome' é obrigatório" />
+                    <p:outputLabel for="limite" value="Limite" />
+                    <p:inputText id="limite" maxlength="45" size="47"
+                                 value="#{contaMB.conta.limite}" required="true"
+                                 requiredMessage="O campo 'Limite' é obrigatório" />
+                    <p:outputLabel for="saldo" value="Saldo:" />
+                    <p:inputText id="saldo" maxlength="45" size="47"
+                                 value="#{contaMB.conta.saldo}" required="true"
+                                 requiredMessage="O campo 'Saldo:' é obrigatório" />
+                    Cidade:
+                    <p:selectOneMenu id="pessoa" filter="true"
+                                     value="#{contaMB.conta.pessoaId}"
+                                     converter="omnifaces.SelectItemsConverter" required="true"
+                                     requiredMessage="O campo 'Estado' é obrigatório">
+                        <f:selectItem noSelectionOption="true"
+                                      itemLabel="Selecione uma pessoa" />
+                        <f:selectItems value="#{contaMB.pessoas}" var="pessoa"
+                                       itemValue="#{pessoa}"
+                                       itemLabel="#{pessoa.nome} - #{pessoa.email}" />
+                    </p:selectOneMenu>
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Salvar"
+                                     actionListener="#{contaMB.inserirOuAtualizar()}"
+                                     update=":mensagem :formCadastro:painel :formListagem:tabela" />
+                    <p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>
