@@ -26,10 +26,6 @@
                                          update=":mensagem :formCadastro:painel">
                         </p:commandButton>
                     </f:facet>
-                    <p:column headerText="Código" filterBy="#{usuario.id}"
-                              filterMatchMode="contains" sortBy="#{usuario.id}">
-                        <h:outputText value="#{usuario.id}" />
-                    </p:column>
 
                     <p:column headerText="Login" filterBy="#{usuario.login}"
                               filterMatchMode="contains" sortBy="#{usuario.login}">

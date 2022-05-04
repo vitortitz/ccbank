@@ -30,15 +30,15 @@ public class CidadeService {
         return cidadeDao.insert(cidade);
     }
     
-    public void editar(Cidade cidade) {
-        cidadeDao.update(cidade);
+    public boolean editar(Cidade cidade) {
+        return cidadeDao.update(cidade);
     }
     
     public List<Cidade> getTodasCidades() {
         return cidadeDao.findAll();
     }
     
-    public void excluir(Cidade cidade) {
-        cidadeDao.delete(cidade);
+    public boolean excluir(Cidade cidade) {
+        return cidadeDao.delete(cidade);
     }
 }

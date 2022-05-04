@@ -49,11 +49,31 @@ public class PessoaController implements Serializable {
         this.usuarios = usuarios;
     }
     
+     public Pessoa getPessoa() {
+        return this.pessoa;
+    }
+    
+    public void setPessoa(Pessoa pessoa) {
+        this.pessoa = pessoa;
+    }
+    
     
     public PessoaController () {
         pessoaService = new PessoaService();
         this.pessoa = new Pessoa();
     }
+    
+    public Date getMinAge() {
+	    Calendar currentDate = Calendar.getInstance();
+	    currentDate.add(Calendar.YEAR, -18);	   
+	    return currentDate.getTime();
+	}
+	
+	public Date getMaxAge() {
+	Calendar currentDate = Calendar.getInstance();
+        currentDate.add(Calendar.YEAR, -120);  
+        return currentDate.getTime();
+	}
     
    
     public String novo() { // ir para a página para inserir uma nova cidade  
@@ -86,18 +106,21 @@ public class PessoaController implements Serializable {
     }
     public String editar(Pessoa pessoa) { 
         this.pessoa = pessoa;
-        return "editar.xhtml?faces-redirect=true";
-    }
-    
-    public String movimentar(Pessoa pessoa) { 
-        this.pessoa = pessoa;     
+        UsuarioDao usuarioDao = new UsuarioDao();
+        usuarios = usuarioDao.findAll();
+        CidadeDao cidadeDao = new CidadeDao();
+        cidades = cidadeDao.findAll();
         return "editar.xhtml?faces-redirect=true";
     }
     
     public String atualizar() {
-        pessoaService.editar(pessoa);
-        UtilMensagens.mensagemSucesso("Sucesso", "Pessoa editada com Sucesso");
+        if(pessoaService.editar(pessoa)){
+            UtilMensagens.mensagemSucesso("Sucesso", "Pessoa editada com Sucesso");
         return "listar.xhtml?faces-redirect=true";
+        }else{
+            UtilMensagens.mensagemErro("Erro", "Pessoa não foi excluida");
+            return null;
+        }     
     }
     
     public List<Pessoa> getListaPessoas(Usuario usuario) {
@@ -108,17 +131,11 @@ public class PessoaController implements Serializable {
         }
     }
     
-    private List<Pessoa> getTodasPessoas() {
+    public List<Pessoa> getTodasPessoas() {
         return pessoaService.getTodasPessoas();
     }
     
-    public Pessoa getPessoa() {
-        return this.pessoa;
-    }
-    
-    public void setPessoa(Pessoa pessoa) {
-        this.pessoa = pessoa;
-    }
+   
     
     
     public String excluir(Pessoa pessoa) {
@@ -126,22 +143,4 @@ public class PessoaController implements Serializable {
         
         return "listar.xhtml?faces-redirect=true";
     }
-    
-    public String visualizarPessoas(Usuario usuario) {        
-        return "../pessoa/listar.xhtml?faces-redirect=true";      
-    }
-    
-    public Date getMinAge() {
-	    Calendar currentDate = Calendar.getInstance();
-	    currentDate.add(Calendar.YEAR, -18);
-	   
-	    return currentDate.getTime();
-	}
-	
-	public Date getMaxAge() {
-	Calendar currentDate = Calendar.getInstance();
-        currentDate.add(Calendar.YEAR, -120);
-        
-        return currentDate.getTime();
-	}
 }

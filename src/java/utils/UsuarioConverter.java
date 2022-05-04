@@ -31,8 +31,6 @@ public class UsuarioConverter implements Converter,Serializable {
             System.out.println(objeto);
             try {
                 Usuario usuario = (Usuario) objeto;
-                int codigo = usuario.getId();
-                System.out.println(codigo);
                 return usuario.toString();
             } catch (RuntimeException ex) {
                 return null;

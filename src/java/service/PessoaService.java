@@ -28,8 +28,8 @@ public class PessoaService {
         return pessoaDao.insert(pessoa);
     }
     
-    public void editar(Pessoa pessoa) {
-        pessoaDao.update(pessoa);
+    public boolean editar(Pessoa pessoa) {
+        return pessoaDao.update(pessoa);
     }
     
     public List<Pessoa> getTodasPessoas() {

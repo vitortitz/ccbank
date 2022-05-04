@@ -1,9 +1,6 @@
 package domain;
 
 import java.io.Serializable;
-import java.util.Date;
-import javax.faces.bean.ManagedBean;
-import javax.inject.Named;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -1,0 +1,125 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    template="../privado/layout/layout.xhtml"
+    xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title">
+        Listar Endereços
+    </ui:define>
+    <ui:define name="content">
+
+        <p:growl id="mensagem" showDetail="true"/>   
+
+        <h:form id="formListagem">
+
+            <p:panel header="Endereços - Listagem">
+
+                <p:dataTable id="tabela" var="endereco"
+                             value="#{enderecoMB.getTodosEnderecos()}"
+                             style="margin-bottom:20px;text-align:center" rows="20"
+                             paginatorPosition="top" paginator="true" lazy="false">
+
+                    <f:facet name="header">
+                        <p:commandButton icon="ui-icon-plus"
+                                         value="Adicionar Endereco"
+                                         actionListener="#{enderecoMB.novo()}"
+                                         oncomplete="PF('dialogo').show();"
+                                         update=":mensagem :formCadastro:painel">
+                            <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                        </p:commandButton>
+                    </f:facet>
+
+                    <p:column headerText="Logradouro" filterBy="#{endereco.logradouro}"
+                              filterMatchMode="contains" sortBy="#{endereco.logradouro}">
+                        <h:outputText value="#{endereco.logradouro}" />
+                    </p:column>
+
+                    <p:column headerText="Complemento" sortBy="#{endereco.complemento}" filterBy="#{endereco.complemento}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{endereco.complemento}" />
+                    </p:column>
+
+                    <p:column headerText="CEP" sortBy="#{endereco.cep}" filterBy="#{endereco.cep}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{endereco.cep}"/>
+                    </p:column>
+
+                    <p:column headerText="Cidade" sortBy="#{endereco.cidade.nome}" filterBy="#{endereco.cidade.nome}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{endereco.cidade.nome} - #{endereco.cidade.uf}" />
+                    </p:column>
+
+                    <p:column headerText="Pessoa" sortBy="#{endereco.pessoaId.nome}" filterBy="#{endereco.pessoaId.nome}"
+                              filterMatchMode="contains">
+                        <h:outputText value="#{endereco.pessoaId.nome} - #{endereco.pessoaId.email}" />
+                    </p:column>
+
+                    <p:column>
+                        <p:commandButton icon="ui-icon-trash"
+                                         actionListener="#{enderecoMB.excluir(endereco)}"
+                                         update=":mensagem :formListagem:tabela"
+                                         >
+                            
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-pencil"
+                                         actionListener="#{enderecoMB.editar(endereco)}"
+                                         update=":mensagem :formCadastro:painel"
+                                         oncomplete="PF('dialogo').show();">
+<f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />                            
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Sim" type="button"
+                                     styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Não" type="button"
+                                     styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </p:panel>
+        </h:form>
+        <p:dialog header="Endereço - Cadastro" widgetVar="dialogo"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form id="formCadastro" enctype="multipart/form-data">
+                <h:panelGrid id="painel" columns="2">
+                    Logradouro: <h:inputText id="logradouro" maxlength="255" value="#{enderecoMB.endereco.logradouro}" required="true" requiredMessage="O campo Logradouro deve conter entre 1 e 255 caracteres."/><br/>
+                    Numero: <h:inputText id="numero" value="#{enderecoMB.endereco.numero}" maxlength="45" required="true" requiredMessage="O campo Número é obrigatório"/><br/>
+                    Complemento <p:inputText id="complemento" maxlength="45" value="#{enderecoMB.endereco.complemento}" />
+                    Bairro: <h:inputText id="bairro" value="#{enderecoMB.endereco.bairro}" maxlength="45" required="true" requiredMessage="O campo Bairro é obrigatório"/><br/>
+                    CEP : <p:inputMask id="cep" value="#{enderecoMB.endereco.cep}" mask="99999-999" validateMask="true"/><br/>
+                    
+                   Pessoa:
+                    <p:selectOneMenu id="pessoa" filter="true"
+                                     value="#{enderecoMB.endereco.pessoaId}"
+                                     converter="omnifaces.SelectItemsConverter" required="true"
+                                     requiredMessage="O campo 'Pessoa' é obrigatório">
+                        <f:selectItem noSelectionOption="true"
+                                      itemLabel="Selecione uma pessoa" />
+                        <f:selectItems value="#{pessoaMB.getTodasPessoas()}" var="pessoa"
+                                       itemValue="#{pessoa}"
+                                       itemLabel="#{pessoa.nome} - #{pessoa.email}" />
+                    </p:selectOneMenu>
+                    Cidade:
+                    <p:selectOneMenu id="cidade" filter="true"
+                                     value="#{enderecoMB.endereco.cidade}"
+                                     converter="omnifaces.SelectItemsConverter" required="true"
+                                     requiredMessage="O campo 'Cidade' é obrigatório">
+                        <f:selectItem noSelectionOption="true"
+                                      itemLabel="Selecione uma cidade" />
+                        <f:selectItems value="#{cidadeMB.getTodasCidades()}" var="cidade"
+                                       itemValue="#{cidade}"
+                                       itemLabel="#{cidade.nome} - #{cidade.uf}" />
+                    </p:selectOneMenu>
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Salvar"
+                                     actionListener="#{enderecoMB.inserirOuAtualizar()}"
+                                     update=":mensagem :formCadastro:painel :formListagem:tabela" />
+                    <p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

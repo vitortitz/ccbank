@@ -19,7 +19,7 @@
                 <p:dataTable id="tabela" var="pessoa"
                              value="#{pessoaMB.getListaPessoas(usuario)}"
                              style="margin-bottom:20px;text-align:center" rows="20"
-                             paginatorPosition="top" paginator="true">
+                             paginatorPosition="top" paginator="true" lazy="false">
 
                     <f:facet name="header">
                         <p:commandButton icon="ui-icon-plus"
@@ -27,22 +27,18 @@
                                          actionListener="#{pessoaMB.novo()}"
                                          oncomplete="PF('dialogo').show();"
                                          update=":mensagem :formCadastro:painel">
+                            <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
                         </p:commandButton>
                     </f:facet>
-
-                    <p:column headerText="Código" filterBy="#{pessoa.id}"
-                              filterMatchMode="contains" sortBy="#{pessoa.id}">
-                        <h:outputText value="#{pessoa.id}" />
-                    </p:column>
 
                     <p:column headerText="Nome" filterBy="#{pessoa.nome}"
                               filterMatchMode="contains" sortBy="#{pessoa.nome}">
                         <h:outputText value="#{pessoa.nome}" />
                     </p:column>
 
-                    <p:column headerText="Sexo" sortBy="#{pessoa.sexo}" filterBy="#{pessoa.sexo}"
+                    <p:column headerText="Sexo" sortBy="#{pessoa.sexoFormatado}" filterBy="#{pessoa.sexoFormatado}"
                               filterMatchMode="contains">
-                        <h:outputText value="#{pessoa.sexo}" />
+                        <h:outputText value="#{pessoa.sexoFormatado}" />
                     </p:column>
 
                     <p:column headerText="Data Nascimento" sortBy="#{pessoa.dataNascimento}" filterBy="#{pessoa.dataNascimento}"
@@ -72,12 +68,12 @@
                         <h:outputText value="#{pessoa.email}" />
                     </p:column>
 
-                    <p:column headerText="Tipo de Pessoa" sortBy="#{pessoa.tipoPessoa}" filterBy="#{pessoa.tipoPessoa}"
+                    <p:column headerText="Tipo de Pessoa" sortBy="#{pessoa.pessoaFormatada}" filterBy="#{pessoa.pessoaFormatada}"
                               filterMatchMode="contains">
-                        <h:outputText value="#{pessoa.tipoPessoa}" />
+                        <h:outputText value="#{pessoa.pessoaFormatada}" />
                     </p:column>
 
-                    <p:column headerText="Cidade" sortBy="#{pessoa.cidade.nome} + #{pessoa.cidade.uf}" filterBy="#{pessoa.cidade.nome} + #{pessoa.cidade.uf}"
+                    <p:column headerText="Cidade" sortBy="#{pessoa.cidade.nome} - #{pessoa.cidade.uf}" filterBy="#{pessoa.cidade.nome} + #{pessoa.cidade.uf}"
                               filterMatchMode="contains">
                         <h:outputText value="#{pessoa.cidade.nome} + #{pessoa.cidade.uf}" />
                     </p:column>
@@ -90,12 +86,15 @@
                     <p:column>
                         <p:commandButton icon="ui-icon-trash"
                                          actionListener="#{pessoaMB.excluir(pessoa)}"
-                                         update=":mensagem :formListagem:tabela">
+                                         update=":mensagem :formListagem:tabela"
+                                         >
+
                         </p:commandButton>
                         <p:commandButton icon="ui-icon-pencil"
                                          actionListener="#{pessoaMB.editar(pessoa)}"
                                          update=":mensagem :formCadastro:painel"
-                                         oncomplete="PF('dialogo').show();">                            
+                                         oncomplete="PF('dialogo').show();">
+                            <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />                            
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
@@ -111,9 +110,9 @@
                   draggable="false" resizable="false" modal="true" closable="false">
             <h:form id="formCadastro" enctype="multipart/form-data">
                 <h:panelGrid id="painel" columns="2">
-                    Nome: <h:inputText id="nome" value="#{pessoaMB.pessoa.nome}" required="true" requiredMessage="O campo nome deve conter entre 1 e 255 caracteres."/><br/>
+                    Nome: <h:inputText id="nome" maxlength="255" value="#{pessoaMB.pessoa.nome}" required="true" requiredMessage="O campo nome deve conter entre 1 e 255 caracteres."/><br/>
                     Telefone: <p:inputMask id="telefone" value="#{pessoaMB.pessoa.telefone}" mask="(99) 99999-9999" validateMask="true"/><br/>
-                    Email: <p:inputText id="email" value="#{pessoaMB.pessoa.email}" requiredMessage="Porfavor digite seu e-mail"
+                    Email: <p:inputText id="email" maxlength="45" value="#{pessoaMB.pessoa.email}" requiredMessage="Porfavor digite seu e-mail"
                                         validatorMessage="Formato de email inválido" required="true">
                         <f:validateRegex
                             pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
@@ -140,9 +139,9 @@
                     <p:selectOneMenu id="usuario" filter="true"
                                      value="#{pessoaMB.pessoa.usuarioId}"
                                      converter="omnifaces.SelectItemsConverter" required="true"
-                                     requiredMessage="O campo 'Estado' é obrigatório">
+                                     requiredMessage="O campo 'Usuario' é obrigatório">
                         <f:selectItem noSelectionOption="true"
-                                      itemLabel="Selecione um estado" />
+                                      itemLabel="Selecione um usuário" />
                         <f:selectItems value="#{pessoaMB.usuarios}" var="usuario"
                                        itemValue="#{usuario}"
                                        itemLabel="#{usuario.login}" />
@@ -151,9 +150,9 @@
                     <p:selectOneMenu id="cidade" filter="true"
                                      value="#{pessoaMB.pessoa.cidade}"
                                      converter="omnifaces.SelectItemsConverter" required="true"
-                                     requiredMessage="O campo 'Estado' é obrigatório">
+                                     requiredMessage="O campo 'Cidade' é obrigatório">
                         <f:selectItem noSelectionOption="true"
-                                      itemLabel="Selecione um estado" />
+                                      itemLabel="Selecione uma cidade" />
                         <f:selectItems value="#{pessoaMB.cidades}" var="cidade"
                                        itemValue="#{cidade}"
                                        itemLabel="#{cidade.nome} - #{cidade.uf}" />

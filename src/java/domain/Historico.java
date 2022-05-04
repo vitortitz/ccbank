@@ -10,6 +10,7 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,7 +21,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -48,28 +49,24 @@ public class Historico implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 1)
     @Column(name = "operacao")
     private String operacao;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 45)
     @Column(name = "tipoMovimento")
     private String tipoMovimento;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "dataHora")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataHora;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "valor")
     private double valor;
     @Size(max = 500)
     @Column(name = "observacao")
     private String observacao;
-    @JoinColumn(name = "conta_id", referencedColumnName = "id")
+    @JoinColumn()
     @ManyToOne(optional = false)
     private Conta contaId;
 
@@ -143,6 +140,19 @@ public class Historico implements Serializable {
     public void setContaId(Conta contaId) {
         this.contaId = contaId;
     }
+    
+     @Transient
+    public String getOperacaoFormatada(){
+        String operacaoFormatada = null;
+        if ("D".equals(operacao)){
+            operacaoFormatada = "Depósito";
+        }else if ("T".equals(operacao)){
+            operacaoFormatada = "Transferência";
+        }else if ("S".equals(operacao))
+            operacaoFormatada = "Saque";
+        return operacaoFormatada;
+    }
+    
 
     @Override
     public int hashCode() {

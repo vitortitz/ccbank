@@ -24,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -227,7 +228,25 @@ public class Pessoa implements Serializable {
     public void setContaList(List<Conta> contaList) {
         this.contaList = contaList;
     }
-
+    @Transient
+    public String getpessoaFormatada(){
+        String pessoaFormatada = null;
+        if (String.valueOf(tipoPessoa).equals("1")){
+            pessoaFormatada = "Física";
+        }else if (String.valueOf(tipoPessoa).equals("2")){
+            pessoaFormatada = "Júridica";
+        }
+        return pessoaFormatada;
+    }
+@Transient
+    public String getsexoFormatado(){
+        String sexoFormatado = null;
+        if ("M".equals(sexo)){
+            sexoFormatado = "Masculino";
+        }else if ("F".equals(sexo))
+            sexoFormatado = "Feminino";
+        return sexoFormatado;
+    }
     @Override
     public int hashCode() {
         int hash = 0;

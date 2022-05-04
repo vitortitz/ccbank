@@ -3,9 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/vitor/NetBeansProjects/ccbank-master/src/java/controller/UsuarioController.java</file>
-            <file>file:/home/vitor/NetBeansProjects/ccbank-master/src/java/hibernate.cfg.xml</file>
-            <file>file:/home/vitor/NetBeansProjects/ccbank-master/src/java/controller/CidadeController.java</file>
+            <file>file:/home/vitor/NetBeansProjects/ccbank-master/src/java/domain/Pessoa.java</file>
         </group>
     </open-files>
 </project-private>

@@ -16,7 +16,7 @@
             <h:form>
                 <p:megaMenu orientation="horizontal" autoDisplay="false">
                     <p:submenu label="Controles"
-                               icon="ui-icon-power">
+                               >
                         <p:column>
                             <p:submenu label="Cidades">
                                 <p:menuitem value="Controle de Cidades"
@@ -24,7 +24,7 @@
 
                             </p:submenu>
                             <p:submenu label="Usuários" >								
-                                <p:menuitem value="Controle de Usuários" icon="ui-icon-power"
+                                <p:menuitem value="Controle de Usuários" 
                                             url="/ccbank-master/usuario/listar.xhtml" />
                             </p:submenu>
                             
@@ -33,15 +33,20 @@
                                             url="/ccbank-master/pessoa/listar.xhtml" />
                             </p:submenu>
                             
+                            <p:submenu label="Endereços" >								
+                                <p:menuitem value="Controle de Endereços" 
+                                            url="/ccbank-master/endereco/listar.xhtml" />
+                            </p:submenu>
+                            
                             <p:submenu label="Contas" >								
-                                <p:menuitem value="Controle de Contas" icon="ui-icon-power"
+                                <p:menuitem value="Controle de Contas" 
                                             url="/ccbank-master/conta/listar.xhtml" />
                             </p:submenu>
                             
                         </p:column>
                     </p:submenu>
 
-                    <p:menuitem icon="ui-icon-power" value="Sair" action="#{usuarioMB.sair()}" />
+                    <p:menuitem  value="Sair" action="#{usuarioMB.sair()}" />
 
                 </p:megaMenu>
             </h:form>

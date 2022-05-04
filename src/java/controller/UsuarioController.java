@@ -7,7 +7,6 @@ package controller;
 import domain.Usuario;
 import java.io.Serializable;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import org.primefaces.PrimeFaces;
@@ -35,6 +34,14 @@ public class UsuarioController implements Serializable {
     public void setUsuarioaLogar(Usuario usuarioaLogar) {
         this.usuarioaLogar = usuarioaLogar;
     }
+    
+    public Usuario getUsuario() {
+        return this.usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 
     public UsuarioController() {
         usuarioService = new UsuarioService();
@@ -56,7 +63,7 @@ public class UsuarioController implements Serializable {
         return "listar.xhtml";
     }
 
-    public String inserir() { // inserir uma nova cidade no Banco de Dados        
+    public String inserir() { 
         if (usuarioService.inserir(usuario)) {
             getTodosUsuarios();
             UtilMensagens.mensagemSucesso("Sucesso", "Usuario incluído com Sucesso");
@@ -73,38 +80,37 @@ public class UsuarioController implements Serializable {
     }
 
     public String atualizar() {
-        usuarioService.editar(usuario);
-        UtilMensagens.mensagemSucesso("Sucesso", "Usuario alterado com Sucesso");
-        return "listar.xhtml?faces-redirect=true";
+        if (usuarioService.editar(usuario)) {
+            UtilMensagens.mensagemSucesso("Sucesso", "Usuario alterado com Sucesso");
+            return "listar.xhtml";
+        } else {
+            UtilMensagens.mensagemErro("Erro", "Usuario não foi editado");
+            return null;
+        }
+
     }
 
     public List<Usuario> getTodosUsuarios() {
         return usuarioService.getTodosUsuarios();
     }
 
-    public Usuario getUsuario() {
-        return this.usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
     public String excluir(Usuario usuario) {
-        usuarioService.excluir(usuario);
-
-        return "listar.xhtml?faces-redirect=true";
+        if (usuarioService.excluir(usuario)) {
+            UtilMensagens.mensagemSucesso("Sucesso", "Usuario excluido com Sucesso");
+            return "listar.xhtml";
+        } else {
+            UtilMensagens.mensagemErro("Erro", "Usuario não foi excluido");
+            return null;
+        }
     }
 
     public void inicializarHibernate() {
         usuarioService.inicializarHibernate();
     }
 
-    
-
     public void autenticar() {
         usuarioaLogar = usuarioService.getUsuarioALogar(usuario.getLogin(), usuario.getSenha());
-        
+
         if (usuarioaLogar == null) {
             PrimeFaces.current().executeScript("swal('ERRO', 'Senha/Usuário Incorretos!', 'error');");
             return;
@@ -117,9 +123,10 @@ public class UsuarioController implements Serializable {
                 + "	    location.href = '../../ccbank-master/index.xhtml';\r\n"
                 + "	});");
     }
+
     public String sair() {
-		usuarioaLogar = null;
-		return "/login.xhtml?faces-redirect=true";
-	}
+        usuarioaLogar = null;
+        return "/login.xhtml?faces-redirect=true";
+    }
 
 }

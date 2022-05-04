@@ -15,21 +15,19 @@
                 <p:dataTable id="tabela" var="conta"
                              value="#{contaMB.getTodasContas()}"
                              style="margin-bottom:20px;text-align:center" rows="20"
-                             paginatorPosition="top" paginator="true">
+                             paginatorPosition="top" paginator="true"  lazy="false" rowKey="#{conta.id}" >
+                    <p:column style="width: 16px">
+                        <p:rowToggler />
+                    </p:column>
 
                     <f:facet name="header">
                         <p:commandButton icon="ui-icon-plus"
-
                                          value="Adicionar Conta"
                                          actionListener="#{contaMB.novo}"
                                          oncomplete="PF('dialogo').show();"
                                          update=":mensagem :formCadastro:painel">
                         </p:commandButton>
                     </f:facet>
-                    <p:column headerText="Código" filterBy="#{conta.id}"
-                              filterMatchMode="contains" sortBy="#{conta.id}">
-                        <h:outputText value="#{usuario.id}" />
-                    </p:column>
 
                     <p:column headerText="Número" filterBy="#{conta.numero}"
                               filterMatchMode="contains" sortBy="#{conta.numero}">
@@ -37,27 +35,76 @@
                     </p:column>
                     <p:column headerText="Limite" sortBy="#{conta.limite}" filterBy="#{conta.limite}"
                               filterMatchMode="contains">
-                        <h:outputText value="#{conta.limite}" />
+                        <h:outputText value="#{conta.limite}" >
+                            <f:convertNumber type="currency" locale="pt_BR"
+                                             minFractionDigits="2" currencySymbol="R$" />
+                        </h:outputText>
                     </p:column>
                     <p:column headerText="Saldo" sortBy="#{conta.saldo}" filterBy="#{conta.saldo}"
                               filterMatchMode="contains">
-                        <h:outputText value="#{conta.saldo}" />
+                        <h:outputText value="#{conta.saldo}" >
+                            <f:convertNumber type="currency" locale="pt_BR"
+                                             minFractionDigits="2" currencySymbol="R$" />
+                        </h:outputText>
                     </p:column>
                     <p:column headerText="Pessoa" sortBy="#{conta.pessoaId.nome}" filterBy="#{conta.pessoaId.nome}"
                               filterMatchMode="contains">
                         <h:outputText value="#{conta.pessoaId.nome}" />
                     </p:column>
                     <p:column>
-                        <p:commandButton icon="ui-icon-trash"
+                        <p:commandButton icon="ui-icon-trash" value="Excluir"
                                          actionListener="#{contaMB.excluir(conta)}"
                                          update=":mensagem :formListagem:tabela">
                         </p:commandButton>
-                        <p:commandButton icon="ui-icon-pencil"
+                        <p:commandButton icon="pi pi-user-edit" value="Editar"
                                          actionListener="#{contaMB.editar(conta)}"
                                          update=":mensagem :formCadastro:painel"
                                          oncomplete="PF('dialogo').show();">                            
                         </p:commandButton>
+                        <p:commandButton icon="ui-icon-plus" value="Depositar"
+                                         actionListener="#{contaMB.editar(conta)}"
+                                         update=":mensagem :formDeposito:painel"
+                                         oncomplete="PF('deposito').show();">                            
+                        </p:commandButton>
+                        <p:commandButton icon="pi pi-arrow-up-right" value="Tranferir"
+                                         actionListener="#{contaMB.editar(conta)}"
+                                         update=":mensagem :formTransferir:painel"
+                                         oncomplete="PF('transferir').show();">                            
+                        </p:commandButton>
+                        <p:commandButton icon="pi pi-arrow-down-left" value="Sacar"
+                                         actionListener="#{contaMB.editar(conta)}"
+                                         update=":mensagem :formSaque:painel"
+                                         oncomplete="PF('saque').show();">                            
+                        </p:commandButton>
                     </p:column>
+                    <p:rowExpansion>
+                        <p:dataTable id="row" emptyMessage="Nenhum registro encontrado."
+                                     value="#{conta.historicoList}" var="historico">
+                            <p:column headerText="Código">
+                                <h:outputText value="#{historico.id}" />
+                            </p:column>
+                            <p:column headerText="Valor">
+                                <h:outputText value="#{historico.valor}" />	
+                            </p:column>
+                            <p:column headerText="Tipo de Movimento">
+                                <h:outputText value="#{historico.tipoMovimento}" />	
+                            </p:column>
+                            <p:column headerText="Operação">
+                                <h:outputText value="#{historico.operacaoFormatada}" />	
+                            </p:column>
+                            <p:column headerText="Observação">
+                                <h:outputText value="#{historico.observacao}" />	
+                            </p:column>
+
+                            <h:outputText value="#{historico.contaId.numero}" />	
+
+                            <p:column headerText="Data">
+                                <h:outputText value="#{historico.dataHora}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable>
+                    </p:rowExpansion>
                 </p:dataTable>
                 <p:confirmDialog global="true">
                     <p:commandButton value="Sim" type="button"
@@ -67,27 +114,31 @@
                 </p:confirmDialog>
             </p:panel>
         </h:form>
-        <p:dialog header="Usuario - Cadastro" widgetVar="dialogo"
+        <p:dialog header="Conta - Cadastro" widgetVar="dialogo"
                   draggable="false" resizable="false" modal="true" closable="false">
             <h:form id="formCadastro" enctype="multipart/form-data">
                 <h:panelGrid id="painel" columns="2">
                     <p:outputLabel for="numero" value="Número:" />
-                    <p:inputText id="numero" maxlength="255" size="50"
+                    <p:inputText id="numero" maxlength="45" size="50"
                                  value="#{contaMB.conta.numero}" required="true"
-                                 requiredMessage="O campo 'Nome' é obrigatório" />
+                                 requiredMessage="O campo 'Numero' é obrigatório" >
+
+                    </p:inputText>
                     <p:outputLabel for="limite" value="Limite" />
-                    <p:inputText id="limite" maxlength="45" size="47"
-                                 value="#{contaMB.conta.limite}" required="true"
-                                 requiredMessage="O campo 'Limite' é obrigatório" />
+                    <p:inputNumber id="limite" size="47" symbol="R$ " symbolPosition="p" 
+                                   decimalSeparator="," thousandSeparator="."
+                                   value="#{contaMB.conta.limite}" required="true"
+                                   requiredMessage="O campo 'Limite' é obrigatório" />
                     <p:outputLabel for="saldo" value="Saldo:" />
-                    <p:inputText id="saldo" maxlength="45" size="47"
-                                 value="#{contaMB.conta.saldo}" required="true"
-                                 requiredMessage="O campo 'Saldo:' é obrigatório" />
-                    Cidade:
+                    <p:inputNumber id="saldo" size="47" symbol="R$ " symbolPosition="p" 
+                                   decimalSeparator="," thousandSeparator="."
+                                   value="#{contaMB.conta.saldo}" required="true"
+                                   requiredMessage="O campo 'Saldo:' é obrigatório" />
+                    Pessoa:
                     <p:selectOneMenu id="pessoa" filter="true"
                                      value="#{contaMB.conta.pessoaId}"
                                      converter="omnifaces.SelectItemsConverter" required="true"
-                                     requiredMessage="O campo 'Estado' é obrigatório">
+                                     requiredMessage="O campo 'Pessoa' é obrigatório">
                         <f:selectItem noSelectionOption="true"
                                       itemLabel="Selecione uma pessoa" />
                         <f:selectItems value="#{contaMB.pessoas}" var="pessoa"
@@ -99,8 +150,78 @@
                 <h:panelGrid columns="2">
                     <p:commandButton value="Salvar"
                                      actionListener="#{contaMB.inserirOuAtualizar()}"
-                                     update=":mensagem :formCadastro:painel :formListagem:tabela" />
+                                     update=":mensagem :formCadastro:painel @form" />
                     <p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+        <p:dialog header="Transferência" widgetVar="transferir"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form id="formTransferir" enctype="multipart/form-data">
+                <h:panelGrid id="painel" columns="2">
+
+                    Valor: <p:inputNumber value="#{valor}" symbol="R$ " symbolPosition="p" 
+                                          decimalSeparator="," thousandSeparator="." required="true" requiredMessage="Campo VALOR obrigatório."/>
+                    Conta:
+                    <p:selectOneMenu id="conta" filter="true"
+                                     value="#{contaDestino}"
+                                     converter="omnifaces.SelectItemsConverter" required="true"
+                                     requiredMessage="O campo 'Conta' é obrigatório">
+                        <f:selectItem noSelectionOption="true"
+                                      itemLabel="Selecione uma conta" />
+                        <f:selectItems value="#{contaMB.contasSemRepetir}" var="contaDiferente"
+                                       itemValue="#{contaDiferente}"
+                                       itemLabel="#{contaDiferente.numero}" />
+                    </p:selectOneMenu>
+
+                    Observação:
+                    <p:inputTextarea id="observacao" maxlength="255" 
+                                     value="#{observacao}" />
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Transferir"
+                                     actionListener="#{contaMB.transferir(contaDestino, valor,observacao)}"
+                                     update=":mensagem :formTransferir:painel :formListagem " />
+                    <p:commandButton value="Fechar" oncomplete="PF('transferir').hide();" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Depositar" widgetVar="deposito"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form id="formDeposito" enctype="multipart/form-data">
+                <h:panelGrid id="painel" columns="2">
+
+                    Valor: <p:inputNumber value="#{valor}" symbol="R$ " symbolPosition="p" 
+                                          decimalSeparator="," thousandSeparator="." required="true" requiredMessage="Campo VALOR obrigatório."/>
+
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Depositar"
+                                     actionListener="#{contaMB.depositar(valor)}"
+                                     update=":mensagem :formDeposito:painel @form" />
+                    <p:commandButton value="Fechar" oncomplete="PF('deposito').hide();" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Sacar" widgetVar="saque"
+                  draggable="false" resizable="false" modal="true" closable="false">
+            <h:form id="formSaque" enctype="multipart/form-data">
+                <h:panelGrid id="painel" columns="2">
+
+                    Valor: <p:inputNumber value="#{valor}" symbol="R$ " symbolPosition="p" 
+                                          decimalSeparator="," thousandSeparator="." required="true" requiredMessage="Campo VALOR obrigatório."/>
+
+                </h:panelGrid>
+
+                <h:panelGrid columns="2">
+                    <p:commandButton value="Sacar"
+                                     actionListener="#{contaMB.sacar(valor)}"
+                                     update=":mensagem :formSaque:painel @form" />
+                    <p:commandButton value="Fechar" oncomplete="PF('saque').hide();" />
                 </h:panelGrid>
             </h:form>
         </p:dialog>

@@ -21,13 +21,19 @@ import utils.UtilMensagens;
 public class CidadeController implements Serializable {
     
     private CidadeService cidadeService;
-    private List<Cidade> listaCidades;
     private Cidade cidade;
     
     public CidadeController () {
         cidadeService = new CidadeService();
-        getTodasCidades();
         this.cidade = new Cidade();
+    }
+    
+    public Cidade getCidade() {
+        return this.cidade;
+    }
+    
+    public void setCidade(Cidade cidade) {
+        this.cidade = cidade;
     }
    
     
@@ -47,7 +53,6 @@ public class CidadeController implements Serializable {
     
     public String inserir() { // inserir uma nova cidade no Banco de Dados        
         if (cidadeService.inserir(cidade)) {      
-            getTodasCidades();
             UtilMensagens.mensagemSucesso("Sucesso", "Cidade incluída com Sucesso");
             return "listar.xhtml";
         } else {
@@ -62,32 +67,26 @@ public class CidadeController implements Serializable {
     }
     
     public String atualizar() {
-        cidadeService.editar(cidade);
-        UtilMensagens.mensagemSucesso("Sucesso", "Cidade editada com Sucesso");
-        return "listar.xhtml?faces-redirect=true";
+        if (cidadeService.editar(cidade)){
+            UtilMensagens.mensagemSucesso("Sucesso", "Cidade editada com Sucesso");
+            return "listar.xhtml?faces-redirect=true";
+        }else{
+            UtilMensagens.mensagemErro("Erro", "Cidade não foi editada");
+            return null;
+        }      
+    }
+    
+    public String excluir(Cidade cidade) {
+        if(cidadeService.excluir(cidade)){
+            UtilMensagens.mensagemSucesso("Sucesso", "Cidade excluida com Sucesso");
+            return "listar.xhtml?faces-redirect=true";
+        }else{
+            UtilMensagens.mensagemErro("Erro", "Cidade não foi excluida");
+            return null;
+        }       
     }
     
     public List<Cidade> getTodasCidades() {
-        listaCidades = cidadeService.getTodasCidades();
-        return listaCidades;
-    }
-    
-    public Cidade getCidade() {
-        return this.cidade;
-    }
-    
-    public void setCidade(Cidade cidade) {
-        this.cidade = cidade;
-    }
-    
-    
-    public String excluir(Cidade cidade) {
-        cidadeService.excluir(cidade);
-        listaCidades = getTodasCidades();
-        return "listar.xhtml?faces-redirect=true";
-    }
-    
-    public List<Cidade> getCidades() {
-        return listaCidades;
+        return cidadeService.getTodasCidades();
     }
 }

@@ -25,10 +25,6 @@
                                          update=":mensagem :formCadastro:painel">
                         </p:commandButton>
                     </f:facet>
-                    <p:column headerText="Código" filterBy="#{cidade.id}"
-                              filterMatchMode="contains" sortBy="#{cidade.id}">
-                        <h:outputText value="#{cidade.id}" />
-                    </p:column>
 
                     <p:column headerText="Nome" filterBy="#{cidade.nome}"
                               filterMatchMode="contains" sortBy="#{cidade.nome}">
@@ -63,9 +59,11 @@
             <h:form id="formCadastro" enctype="multipart/form-data">
                 <h:panelGrid id="painel" columns="2">
                     <p:outputLabel for="nome" value="Descrição:" />
-                    <p:inputText id="nome" maxlength="50" size="30"
+                    <p:inputText id="nome" maxlength="255" size="30"
                                  value="#{cidadeMB.cidade.nome}" required="true"
-                                 requiredMessage="O campo 'Nome' é obrigatório" />
+                                 requiredMessage="O campo 'Nome' é obrigatório" >
+                        <f:validateLength minimum="3" />
+                    </p:inputText>
                     <p:outputLabel for="uf" value="UF" />
                     <p:inputText id="uf" maxlength="2" size="2"
                                  value="#{cidadeMB.cidade.uf}" required="true"

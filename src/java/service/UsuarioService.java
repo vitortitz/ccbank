@@ -27,16 +27,16 @@ public class UsuarioService {
         return usuarioDao.insert(usuario);
     }
     
-    public void editar(Usuario usuario) {
-        usuarioDao.update(usuario);
+    public boolean editar(Usuario usuario) {
+        return usuarioDao.update(usuario);
     }
     
     public List<Usuario> getTodosUsuarios() {
         return usuarioDao.findAll();
     }
     
-    public void excluir(Usuario usuario) {
-        usuarioDao.delete(usuario);
+    public boolean excluir(Usuario usuario) {
+        return usuarioDao.delete(usuario);
     }
     
     public void inicializarHibernate() {
@@ -44,7 +44,6 @@ public class UsuarioService {
     }
     
     public Usuario getUsuarioALogar(String login, String senha){
-        System.out.println(login+"   "+senha);
      return usuarioDao.findByLoginAndPasswd(login, senha);
     }
 }

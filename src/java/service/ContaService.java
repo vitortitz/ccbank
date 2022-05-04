@@ -4,9 +4,7 @@
  */
 package service;
 
-import dao.CidadeDao;
 import dao.ContaDao;
-import domain.Cidade;
 import domain.Conta;
 import java.util.List;
 
@@ -27,15 +25,19 @@ public class ContaService {
         return contaDao.insert(conta);
     }
     
-    public void editar(Conta conta) {
-        contaDao.update(conta);
+    public boolean editar(Conta conta) {
+        return contaDao.update(conta);
     }
     
     public List<Conta> getTodasContas() {
         return contaDao.findAll();
     }
     
-    public void excluir(Conta conta) {
-        contaDao.delete(conta);
+    public List<Conta> getOutrasContas(int id){
+        return  contaDao.findByIdDifferent(id);
+    }
+    
+    public boolean excluir(Conta conta) {
+        return contaDao.delete(conta);
     }
 }
